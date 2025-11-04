@@ -1,5 +1,5 @@
 use crate::components::*;
-use bevy::{audio::Sample, color::palettes::tailwind, prelude::*};
+use bevy::{color::palettes::tailwind, prelude::*};
 use rand::prelude::*;
 
 pub struct YeetSetupWorldPlugin;
@@ -33,7 +33,7 @@ fn setup_world(
         if x.abs() > INNER_BOUND && y.abs() > INNER_BOUND && z.abs() > INNER_BOUND {
             let mut collision = false;
 
-            // Check for collisions with existing spheres *without* Bevy world iteration
+            // Check for collisions with existing spheres
             for (existing_x, existing_y, existing_z) in &valid_points {
                 let dx: f32 = x - existing_x;
                 let dy: f32 = y - existing_y;
