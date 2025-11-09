@@ -66,7 +66,7 @@ fn setup_hives(
             Mesh3d(sphere_mesh),
             MeshMaterial3d(sphere_material.clone()),
             Transform::from_xyz(*x, *y, *z),
-            AntHive,
+            AntHive { stored_ore: 0.0 },
             Collidable,
         ));
     }
@@ -138,11 +138,14 @@ fn setup_asteroids(
     for (x, y, z) in &valid_asteroids {
         let sphere_mesh = meshes.add(Sphere::new(RADIUS));
         let sphere_material = materials.add(Color::from(tailwind::EMERALD_500));
+        let ore_amount: f32 = rng.random_range(0.0..=1000.0);
         commands.spawn((
             Mesh3d(sphere_mesh),
             MeshMaterial3d(sphere_material.clone()),
             Transform::from_xyz(*x, *y, *z),
-            Asteroid,
+            Asteroid {
+                amount_ore: ore_amount,
+            },
             Collidable,
         ));
     }
