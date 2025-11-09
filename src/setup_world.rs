@@ -66,7 +66,11 @@ fn setup_hives(
             Mesh3d(sphere_mesh),
             MeshMaterial3d(sphere_material.clone()),
             Transform::from_xyz(*x, *y, *z),
-            AntHive { stored_ore: 0.0 },
+            AntHive,
+            Storage {
+                stored_ore: 0.0,
+                max_stored_ore: 10_000.0,
+            },
             Collidable,
         ));
     }
@@ -143,8 +147,10 @@ fn setup_asteroids(
             Mesh3d(sphere_mesh),
             MeshMaterial3d(sphere_material.clone()),
             Transform::from_xyz(*x, *y, *z),
-            Asteroid {
-                amount_ore: ore_amount,
+            Asteroid,
+            Storage {
+                stored_ore: ore_amount,
+                max_stored_ore: 1_000.0,
             },
             Collidable,
         ));

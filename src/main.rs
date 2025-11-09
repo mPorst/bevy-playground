@@ -1,18 +1,23 @@
 use bevy::prelude::*;
 
-use crate::bevy_camera::*;
-use crate::components::*;
-use crate::setup_world::*;
-
 mod bevy_camera;
 mod components;
+mod logic {
+    pub mod hive_logic;
+}
 mod setup_world;
+
+use crate::bevy_camera::*;
+use crate::components::*;
+use crate::logic::hive_logic::*;
+use crate::setup_world::*;
 
 fn main() {
     let mut app = App::new();
     app.add_plugins(DefaultPlugins)
         .add_plugins(YeetCameraPlugin)
-        .add_plugins(YeetSetupWorldPlugin);
+        .add_plugins(YeetSetupWorldPlugin)
+        .add_plugins(YeetHiveLogicPlugin);
     app.add_systems(Startup, setup_player);
 
     app.run();
