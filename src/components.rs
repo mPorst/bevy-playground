@@ -11,3 +11,6 @@ pub struct Ant;
 
 #[derive(Component)]
 pub struct AntHive;
+
+#[derive(Component)]
+pub struct Collidable;
