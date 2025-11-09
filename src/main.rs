@@ -1,4 +1,4 @@
-use bevy::{color::palettes::tailwind, prelude::*};
+use bevy::prelude::*;
 
 use crate::bevy_camera::*;
 use crate::components::*;
