@@ -14,13 +14,19 @@ fn hive_agent_logic(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    mut query: Query<(&mut Transform, &mut Storage), With<AntHive>>,
+    mut query: Query<(&mut Transform, &mut Storage, Entity), With<AntHive>>,
 ) {
     const ANT_SPAWN_COST: f32 = 25.0;
 
-    for (mut transform, mut storage) in query.iter_mut() {
+    for (mut transform, mut storage, entity) in query.iter_mut() {
         if storage.stored_ore >= ANT_SPAWN_COST {
-            spawn_new_ant(&mut commands, &mut meshes, &mut materials, &mut transform);
+            spawn_new_ant(
+                &mut commands,
+                &mut meshes,
+                &mut materials,
+                &mut transform,
+                entity,
+            );
             storage.stored_ore -= ANT_SPAWN_COST;
             println!("spawned new ant");
         }
@@ -32,6 +38,7 @@ fn spawn_new_ant(
     meshes: &mut ResMut<Assets<Mesh>>,
     materials: &mut ResMut<Assets<StandardMaterial>>,
     hive_pos: &mut Transform,
+    hive_id: Entity,
 ) {
     let ellipsoid_mesh = meshes.add(Capsule3d::new(1.0, 4.0));
     let sphere_material = materials.add(Color::from(tailwind::LIME_500));
@@ -47,6 +54,11 @@ fn spawn_new_ant(
             stored_ore: 0.0,
             max_stored_ore: 10.0,
         },
+        HomeBase {
+            home_base: Some(hive_id),
+        },
+        Target { target: None },
         Collidable,
+        Ant,
     ));
 }

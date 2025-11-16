@@ -28,8 +28,9 @@ fn setup_hives(
     const MIN_DISTANCE: f32 = RADIUS * 2.5;
     let mut rng = rand::rng();
     let mut valid_hives: Vec<(f32, f32, f32)> = Vec::new();
+    let mut hive_id = 1;
 
-    while valid_hives.len() < 3 {
+    while valid_hives.len() < 6 {
         let (x, y, z): (f32, f32, f32) = (
             rng.random_range(-OUTER_BOUND..=OUTER_BOUND),
             rng.random_range(-OUTER_BOUND..=OUTER_BOUND),
@@ -68,11 +69,12 @@ fn setup_hives(
             Transform::from_xyz(*x, *y, *z),
             AntHive,
             Storage {
-                stored_ore: 0.0,
+                stored_ore: 25.0,
                 max_stored_ore: 10_000.0,
             },
             Collidable,
         ));
+        hive_id += 1;
     }
 }
 
@@ -82,7 +84,7 @@ fn setup_asteroids(
     mut materials: ResMut<Assets<StandardMaterial>>,
     query: Query<&Transform, With<Collidable>>,
 ) {
-    let my_span = info_span!("setup_asteroids", name = "setup_asteroids").entered();
+    let _my_span = info_span!("setup_asteroids", name = "setup_asteroids").entered();
 
     const RADIUS: f32 = 2.0;
     const OUTER_BOUND: f32 = 200.0;
@@ -126,7 +128,6 @@ fn setup_asteroids(
                     let distance: f32 = (dx.powi(2) + dy.powi(2) + dz.powi(2)).sqrt();
                     if distance < MIN_DISTANCE {
                         collision = true;
-                        //println!("Collision with asteroid found !");
                         break; // No need to check other points if a collision is found.
                     }
                 }

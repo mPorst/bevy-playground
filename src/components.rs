@@ -20,3 +20,13 @@ pub struct Storage {
 
 #[derive(Component)]
 pub struct Collidable;
+
+#[derive(Component, Default, Clone, Copy)]
+pub struct Target {
+    pub target: Option<Entity>,
+}
+
+#[derive(Component, Default, Clone, Copy)]
+pub struct HomeBase {
+    pub home_base: Option<Entity>,
+}

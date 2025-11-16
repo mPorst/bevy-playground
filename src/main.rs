@@ -3,12 +3,14 @@ use bevy::prelude::*;
 mod bevy_camera;
 mod components;
 mod logic {
+    pub mod ant_logic;
     pub mod hive_logic;
 }
 mod setup_world;
 
 use crate::bevy_camera::*;
 use crate::components::*;
+use crate::logic::ant_logic::*;
 use crate::logic::hive_logic::*;
 use crate::setup_world::*;
 
@@ -17,6 +19,7 @@ fn main() {
     app.add_plugins(DefaultPlugins)
         .add_plugins(YeetCameraPlugin)
         .add_plugins(YeetSetupWorldPlugin)
+        .add_plugins(YeetAntLogicPlugin)
         .add_plugins(YeetHiveLogicPlugin);
     app.add_systems(Startup, setup_player);
 
