@@ -168,7 +168,7 @@ fn setup_lights(mut commands: Commands) {
         PointLight {
             color: Color::from(tailwind::YELLOW_100),
             intensity: 40_000_000.0, // this value seems to create a good brightness of the pointlight
-            range: 30.0,
+            range: 3000.0,
             ..default()
         },
         Transform::from_xyz(5.0, 10.0, 5.0),
