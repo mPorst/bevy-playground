@@ -7,11 +7,11 @@ pub struct YeetCameraPlugin;
 
 impl Plugin for YeetCameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, camera_update);
+        app.add_systems(Update, (camera_view_update, camera_move_update));
     }
 }
 
-fn camera_update(
+fn camera_view_update(
     mut player: Single<&mut Transform, With<Player>>,
     mouse_delta: Res<AccumulatedMouseMotion>,
 ) {
@@ -24,5 +24,27 @@ fn camera_update(
         let pitch = Quat::from_euler(EulerRot::XYZ, -deltay, 0.0, 0.0);
         // multiplication from right
         player.rotation = (original_rotation * yaw * pitch).normalize();
+    }
+}
+
+fn camera_move_update(
+    mut player: Single<&mut Transform, With<Player>>,
+    keys: Res<ButtonInput<KeyCode>>,
+) {
+    if keys.pressed(KeyCode::KeyW) {
+        let dir = player.forward().as_vec3();
+        player.translation = player.translation + dir;
+    }
+    if keys.pressed(KeyCode::KeyS) {
+        let dir = player.forward().as_vec3();
+        player.translation = player.translation - dir;
+    }
+    if keys.pressed(KeyCode::KeyD) {
+        let dir = player.right().as_vec3();
+        player.translation = player.translation + dir;
+    }
+    if keys.pressed(KeyCode::KeyA) {
+        let dir = player.right().as_vec3();
+        player.translation = player.translation - dir;
     }
 }
