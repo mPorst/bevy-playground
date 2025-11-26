@@ -97,8 +97,8 @@ fn ant_agent_logic(
                             ant_transform.translation = ant_transform.translation + dir * speed;
                         } else {
                             // start the transfer once the homebase is in range
-                            home_storage.stored_ore += ant_storage.max_stored_ore;
-                            ant_storage.stored_ore -= ant_storage.max_stored_ore;
+                            home_storage.stored_ore += ant_storage.stored_ore;
+                            ant_storage.stored_ore -= ant_storage.stored_ore;
                             println!(
                                 "Ant storage: {} after putting into home storage: {}",
                                 ant_storage.stored_ore, home_storage.stored_ore
