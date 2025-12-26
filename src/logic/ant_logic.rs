@@ -40,29 +40,14 @@ fn ant_agent_logic(
                         if ast_storage.stored_ore == 0.0 {
                             ant_target.target = None;
                         } else {
-                            let dir =
-                                (ast_transform.translation - ant_transform.translation).normalize();
+                            move_to_target(&mut ant_transform, ast_transform);
                             let dist = ast_transform
                                 .translation
                                 .distance(ant_transform.translation);
                             // approach the asteroid if it is farther away than 1 unit
-                            if dist > 1.0 {
-                                // speed down the ant when it approaches an asteroid
-                                let speed = 0.1 - 0.09 / (1.0 + dist / 5.0) * heaviside(dist, 10.0);
-                                ant_transform.translation = ant_transform.translation + dir * speed;
-                            } else {
+                            if dist < 1.0 {
                                 // start the transfer once the asteroid is in range
-                                if ast_storage.stored_ore >= ant_storage.max_stored_ore {
-                                    ast_storage.stored_ore -= ant_storage.max_stored_ore;
-                                    ant_storage.stored_ore += ant_storage.max_stored_ore;
-                                    println!(
-                                        "Ant storage: {} after taking from asteroid storage: {}",
-                                        ant_storage.stored_ore, ast_storage.stored_ore
-                                    );
-                                } else {
-                                    ant_storage.stored_ore += ast_storage.stored_ore;
-                                    ast_storage.stored_ore = 0.0;
-                                }
+                                transfer_storage(&mut ant_storage, &mut ast_storage);
                             }
                         }
                     }
@@ -85,24 +70,16 @@ fn ant_agent_logic(
             if let Some(homebase) = ant_homebase.home_base {
                 match query_hive.get_mut(homebase) {
                     Ok((home_transform, mut home_storage)) => {
-                        let dir =
-                            (home_transform.translation - ant_transform.translation).normalize();
-                        let dist = home_transform
+                        move_to_target(&mut ant_transform, home_transform);
+                        let dist = ant_transform
                             .translation
-                            .distance(ant_transform.translation);
-                        // approach the homebase if it is farther away than 1 unit
-                        if dist > 1.0 {
-                            // speed down the ant when it approaches the base
-                            let speed = 0.1 - 0.09 / (1.0 + dist / 5.0) * heaviside(dist, 10.0);
-                            ant_transform.translation = ant_transform.translation + dir * speed;
-                        } else {
-                            // start the transfer once the homebase is in range
-                            home_storage.stored_ore += ant_storage.stored_ore;
-                            ant_storage.stored_ore -= ant_storage.stored_ore;
-                            println!(
-                                "Ant storage: {} after putting into home storage: {}",
-                                ant_storage.stored_ore, home_storage.stored_ore
-                            );
+                            .distance(home_transform.translation);
+                        if dist < 1.0 {
+                            transfer_storage(&mut home_storage, &mut ant_storage);
+                            //println!(
+                            //    "Ant storage: {} after putting into home storage: {}",
+                            //    ant_storage.stored_ore, home_storage.stored_ore
+                            //);
                         }
                     }
                     Err(e) => {
@@ -111,5 +88,53 @@ fn ant_agent_logic(
                 }
             }
         }
+    }
+}
+
+fn move_to_target(mover: &mut Transform, target: &Transform) {
+    /// 1) Rotate
+    let to_target = (target.translation - mover.translation).normalize();
+    let mover_target_rotation = Quat::from_rotation_arc(Vec3::Y, to_target);
+
+    // need a threshold to identify the rotations to be equal
+    const ROT_THRESHOLD: f32 = 0.5;
+    let angle = mover
+        .rotation
+        .angle_between(mover_target_rotation)
+        .to_degrees()
+        .abs();
+    //println!("rotation angle: {}", angle);
+
+    if angle > ROT_THRESHOLD {
+        mover.rotation = mover
+            .rotation
+            .slerp(mover_target_rotation, 0.03)
+            .normalize();
+    } else {
+        //
+        mover.rotation = mover_target_rotation;
+        //println!("Rotations identical");
+        // then move
+        let dir = (target.translation - mover.translation).normalize();
+        let dist = target.translation.distance(mover.translation);
+        // approach the target if it is farther away than 1 unit
+        if dist > 1.0 {
+            // speed down the ant when it approaches the base
+            let speed = 0.1 - 0.09 / (1.0 + dist / 5.0) * heaviside(dist, 10.0);
+            mover.translation = mover.translation + dir * speed;
+        }
+    }
+}
+
+fn transfer_storage(to: &mut Storage, from: &mut Storage) {
+    let free_space = to.max_stored_ore - to.stored_ore;
+    let avail_volume_for_transfer = from.stored_ore;
+    if free_space < avail_volume_for_transfer {
+        to.stored_ore += free_space;
+        from.stored_ore -= free_space;
+    }
+    if free_space > avail_volume_for_transfer {
+        to.stored_ore += avail_volume_for_transfer;
+        from.stored_ore = 0.0;
     }
 }
