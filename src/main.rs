@@ -1,14 +1,17 @@
 use bevy::prelude::*;
 
-mod bevy_camera;
+mod camera;
 mod components;
 mod logic {
     pub mod ant_logic;
     pub mod hive_logic;
 }
+mod common;
+mod inventory;
 mod setup_world;
+mod ship;
 
-use crate::bevy_camera::*;
+use crate::camera::*;
 use crate::components::*;
 use crate::logic::ant_logic::*;
 use crate::logic::hive_logic::*;

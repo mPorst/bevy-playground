@@ -3,15 +3,7 @@ use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
 const CAMERA_SENSITIVITY: f32 = 0.005;
 
-pub struct YeetCameraPlugin;
-
-impl Plugin for YeetCameraPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, (camera_view_update, camera_move_update));
-    }
-}
-
-fn camera_view_update(
+pub fn camera_view_update(
     mut player: Single<&mut Transform, With<Player>>,
     mouse_delta: Res<AccumulatedMouseMotion>,
 ) {
@@ -27,7 +19,7 @@ fn camera_view_update(
     }
 }
 
-fn camera_move_update(
+pub fn camera_move_update(
     mut player: Single<&mut Transform, With<Player>>,
     keys: Res<ButtonInput<KeyCode>>,
 ) {

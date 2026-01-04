@@ -45,7 +45,7 @@ fn ant_agent_logic(
                                 .translation
                                 .distance(ant_transform.translation);
                             // approach the asteroid if it is farther away than 1 unit
-                            if dist < 1.0 {
+                            if dist < 1.1 {
                                 // start the transfer once the asteroid is in range
                                 transfer_storage(&mut ant_storage, &mut ast_storage);
                             }
@@ -56,7 +56,7 @@ fn ant_agent_logic(
                     }
                 }
             } else {
-                for (ast_transform, mut ast_storage, ast_entity) in query_asteroid.iter_mut() {
+                for (ast_transform, ast_storage, ast_entity) in query_asteroid.iter_mut() {
                     let dist = ast_transform
                         .translation
                         .distance(ant_transform.translation);
@@ -74,7 +74,7 @@ fn ant_agent_logic(
                         let dist = ant_transform
                             .translation
                             .distance(home_transform.translation);
-                        if dist < 1.0 {
+                        if dist < 1.1 {
                             transfer_storage(&mut home_storage, &mut ant_storage);
                             //println!(
                             //    "Ant storage: {} after putting into home storage: {}",
@@ -83,7 +83,7 @@ fn ant_agent_logic(
                         }
                     }
                     Err(e) => {
-                        println!("unable to get asteroid in ant_agent_logic");
+                        println!("unable to get homebase in ant_agent_logic");
                     }
                 }
             }
@@ -111,9 +111,8 @@ fn move_to_target(mover: &mut Transform, target: &Transform) {
             .slerp(mover_target_rotation, 0.03)
             .normalize();
     } else {
-        //
+        // snap to target rotation
         mover.rotation = mover_target_rotation;
-        //println!("Rotations identical");
         // then move
         let dir = (target.translation - mover.translation).normalize();
         let dist = target.translation.distance(mover.translation);

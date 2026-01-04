@@ -28,7 +28,6 @@ fn setup_hives(
     const MIN_DISTANCE: f32 = RADIUS * 2.5;
     let mut rng = rand::rng();
     let mut valid_hives: Vec<(f32, f32, f32)> = Vec::new();
-    let mut hive_id = 1;
 
     while valid_hives.len() < 6 {
         let (x, y, z): (f32, f32, f32) = (
@@ -74,7 +73,6 @@ fn setup_hives(
             },
             Collidable,
         ));
-        hive_id += 1;
     }
 }
 
