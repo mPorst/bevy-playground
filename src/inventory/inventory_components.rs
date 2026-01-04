@@ -6,7 +6,7 @@ use bevy::prelude::*;
 #[derive(Clone)]
 pub struct InventoryItemStack {
     pub base_item: InventoryItem,
-    pub amount: i32,
+    pub amount: u32,
 }
 
 impl InventoryItemStack {
